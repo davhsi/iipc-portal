@@ -1,7 +1,7 @@
 <template>
   <div class="h-screen w-64 bg-blue-700 text-gray-100 flex flex-col justify-between">
     <div class="p-5">
-      <img src="../assets/login.png" alt="IIPC Logo" class="w-24 mb-8 mx-auto" />
+      <img src="../assets/login.png" alt="IIPC Logo" class="w-34 h-28 mb-8 mx-auto" />
       <h2 class="text-xl font-semibold mb-8 text-center tracking-wide">Dashboard</h2>
       <nav>
         <ul>
