@@ -8,8 +8,8 @@
         <th class="py-2 px-4 bg-gray-200 text-left">Company</th>
         <th class="py-2 px-4 bg-gray-200 text-left">Location</th>
         <th class="py-2 px-4 bg-gray-200 text-left">Last Visited</th>
+        <th class="py-2 px-4 bg-gray-200 text-left">Rating</th>
         <th class="py-2 px-4 bg-gray-200 text-left">Actions</th>
-
       </tr>
     </thead>
     <tbody>
@@ -19,9 +19,12 @@
         <td class="border px-4 py-2">{{ expert.domainOfExpertise }}</td>
         <td class="border px-4 py-2">{{ expert.companyName }}</td>
         <td class="border px-4 py-2">{{ expert.companyAddress }}</td>
-        <td class="border px-4 py-2">{{ expert.eventDate }}</td>
-
-
+        <td class="border px-4 py-2">{{ formatDate(expert.eventDate) }}</td>
+        <td class="border px-4 py-2">
+          <span v-for="n in 5" :key="n" class="text-yellow-400">
+            <i class="fas" :class="n <= expert.rating ? 'fa-star' : 'fa-star-o'"></i>
+          </span>
+        </td>
         <td class="border px-4 py-2">
           <button
             class="bg-green-500 text-white py-1 px-2 rounded mr-2"
@@ -42,6 +45,11 @@ defineProps({
     required: true
   }
 });
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+};
 </script>
 
 <style scoped>
@@ -63,5 +71,13 @@ th {
 
 button {
   cursor: pointer;
+}
+
+.text-yellow-400 {
+  color: #fbbf24; /* Tailwind yellow-400 */
+}
+
+.fas.fa-star, .fas.fa-star-o {
+  font-size: 1rem;
 }
 </style>
