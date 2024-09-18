@@ -10,7 +10,7 @@ const routes = [
   { 
     path: '/dashboard', 
     component: Dashboard, 
-    redirect: '/dashboard/industry-expert', // Redirect to IndustryExpertDashboard by default
+    redirect: '/dashboard/industry-expert',
     children: [
       { 
         path: 'industry-expert', 
@@ -29,9 +29,11 @@ const routes = [
         name: 'EditIndustryExpert',
         component: IndustryExpertInputForm,
         props: true  // Pass route parameter `id` as a prop
-      }
+      },
+      
     ]
-  }
+  },
+
 ];
 
 const router = createRouter({

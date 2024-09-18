@@ -1,66 +1,70 @@
 <template>
-  <div class="h-screen w-64 bg-blue-700 text-gray-100 flex flex-col justify-between">
-    <div class="p-5">
-      <img src="../assets/login.png" alt="IIPC Logo" class="w-34 h-28 mb-8 mx-auto" />
-      <h2 class="text-xl font-semibold mb-8 text-center tracking-wide">Dashboard</h2>
-      <nav>
-        <ul>
-          <li class="mb-4">
-            <router-link 
-              to="/dashboard/industry-expert" 
-              class="flex items-center space-x-4 hover:bg-blue-800 p-3 rounded transition-all"
-              active-class="bg-blue-900"
-            >
-              <span class="text-lg">Industry Experts</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link 
-              to="/dashboard/faculty-visit" 
-              class="flex items-center space-x-4 hover:bg-blue-800 p-3 rounded transition-all"
-              active-class="bg-blue-900"
-            >
-              <span class="text-lg">Faculty Visits</span>
-            </router-link>
-          </li>
-        </ul>
-      </nav>
+  <div class="h-screen w-64 bg-blue-800 text-gray-100 flex flex-col">
+    <!-- Logo and Title -->
+    <div class="p-5 flex flex-col items-center border-b border-blue-700">
+      <img src="../assets/login.png" alt="IIPC Logo" class="w-32 h-24 mb-4" />
+      <h2 class="text-xl font-semibold mb-4 text-center tracking-wide">Dashboard</h2>
     </div>
-    <div class="p-5">
+
+    <!-- Navigation Menu -->
+    <nav class="flex-grow">
+      <ul class="space-y-2 p-5">
+        <li>
+          <router-link 
+            to="/dashboard/industry-expert" 
+            class="flex items-center space-x-4 p-3 rounded transition-colors hover:bg-blue-700"
+            :class="{ 'bg-blue-900': $route.path === '/dashboard/industry-expert' }"
+          >
+            <i class="fas fa-user-tie text-lg"></i> 
+            <span class="text-lg">Industry Experts</span>
+          </router-link>
+        </li>
+        <li>
+          <router-link 
+            to="/dashboard/faculty-visit" 
+            class="flex items-center space-x-4 p-3 rounded transition-colors hover:bg-blue-700"
+            :class="{ 'bg-blue-900': $route.path === '/dashboard/faculty-visit' }"
+          >
+            <i class="fas fa-chalkboard-teacher text-lg"></i>
+            <span class="text-lg">Faculty Visits</span>
+          </router-link>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Logout Button -->
+    <div class="p-5 border-t border-blue-700">
       <router-link 
         to="/" 
-        class="flex items-center space-x-4 hover:bg-blue-800 p-3 rounded transition-all"
+        class="flex items-center space-x-4 p-3 rounded transition-colors hover:bg-blue-700"
       >
+        <i class="fas fa-sign-out-alt text-lg"></i> 
         <span class="text-lg">Log out</span>
       </router-link>
     </div>
   </div>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
-.material-icons {
-  font-size: 1.5rem;
+
+a.active {
+  background-color: #1e3a8a; 
 }
 
-ul li a {
-  transition: background-color 0.3s ease;
+
+a:hover {
+  background-color: #2b4d8d; 
 }
 
-ul li a.active {
-  background-color: #1c3aa9; /* Even darker shade for active link */
-}
-
-ul li a:hover {
-  background-color: #285df7; /* Lighter blue shade on hover */
-}
 
 h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.05rem;
-  color: #e2e8f0; /* Lighter color for heading */
+  color: #e2e8f0; 
+}
+
+
+@media (max-width: 768px) {
+  .h-screen {
+    height: auto;
+  }
 }
 </style>

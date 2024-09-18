@@ -8,13 +8,13 @@ const industryExpertSchema = new mongoose.Schema({
   domainOfExpertise: { type: String, required: true },
   alumnusOfBIT: { type: String, required: true }, // 'Yes' or 'No'
   companyName: { type: String, required: true },
-  companyAddress: { type: String, required: true },
+  companyAddress: { type: String, required: true }, 
   companyPhoneNumber: { type: String, required: true },
   companyMailId: { type: String, required: true },
   eventDate: { type: Date, required: true },
   eventType: { type: String, required: true },
   eventCoordinator: { type: String, required: true },
-  rating: { type: Number, default: 0 } // Use a number for rating, adjust as needed
+  rating: { type: Number, default: 0 } 
 });
 
 const IndustryExpert = mongoose.model('IndustryExpert', industryExpertSchema);

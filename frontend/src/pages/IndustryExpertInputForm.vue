@@ -93,6 +93,8 @@
 </template>
 
 <script setup>
+import Sidebar from '../components/Sidebar.vue';
+
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 

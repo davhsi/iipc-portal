@@ -64,7 +64,7 @@ const formatDate = (dateString) => {
 
 const starStyle = (n, rating) => {
   return {
-    color: n <= rating ? '#fbbf24' : '#e5e7eb', // Yellow if rated, otherwise gray
+    color: n <= rating ? '#fbbf24' : '#e5e7eb', 
     transition: 'color 0.2s ease-in-out'
   };
 };
@@ -93,7 +93,7 @@ button {
 }
 
 .text-yellow-400 {
-  color: #fbbf24; /* Tailwind yellow-400 */
+  color: #fbbf24;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 }
 
 .fas.fa-star, .fas.fa-star-o {
@@ -109,10 +109,10 @@ button {
 }
 
 .bg-blue-500 {
-  background-color: #3b82f6; /* Tailwind blue-500 */
+  background-color: #3b82f6; 
 }
 
 .bg-blue-600 {
-  background-color: #2563eb; /* Tailwind blue-600 */
+  background-color: #2563eb; 
 }
 </style>
