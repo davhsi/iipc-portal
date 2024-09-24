@@ -12,43 +12,54 @@ exports.addIndustryExpert = async (req, res) => {
   }
 };
 
-// Get all Industry Experts with search, sort, domain, location, and date filtering
+// Get Industry Experts with filtering
+// Get Industry Experts with filtering
+// Get Industry Experts with filtering
 exports.getIndustryExperts = async (req, res) => {
   try {
-    const { search, sortField = 'eventDate', sortOrder = 'asc', startDate, endDate, domain, location } = req.query;
+    const { name, startDate, endDate, domainOfExpertise, companyAddress, eventType, rating } = req.body;
 
     // Initialize query object
     let query = {};
-    
-    // Full-text search (assumes text index on relevant fields)
-    if (search) {
-      query.$text = { $search: search };
+
+    // Filter by name (both first and last name)
+    if (name) {
+      query.$or = [
+        { firstname: { $regex: name, $options: 'i' } },  // Case-insensitive search in firstname
+        { lastname: { $regex: name, $options: 'i' } }    // Case-insensitive search in lastname
+      ];
     }
 
-    // Filter by domain
-    if (domain) {
-      query.domainOfExpertise = domain;
-    }
-    
-    // Filter by location
-    if (location) {
-      query.companyAddress = location;
-    }
-    
     // Filter by event date range
-    if (startDate && endDate) {
-      query.eventDate = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    if (startDate || endDate) {
+      query.eventDate = {};
+      if (startDate) query.eventDate.$gte = new Date(startDate);
+      if (endDate) query.eventDate.$lte = new Date(endDate);
     }
 
-    // Define sorting options based on query parameters
-    const sortOptions = {};
-    if (sortField) {
-      sortOptions[sortField] = sortOrder === 'asc' ? 1 : -1; // Ascending or descending based on sortOrder
+    // Filter by domain of expertise
+    if (domainOfExpertise) {
+      query.domainOfExpertise = domainOfExpertise;
     }
 
-    // Fetch the experts using the constructed query and sort options
-    const experts = await IndustryExpert.find(query).sort(sortOptions);
-    
+    // Filter by company address
+    if (companyAddress) {
+      query.companyAddress = companyAddress;
+    }
+
+    // Filter by event type
+    if (eventType) {
+      query.eventType = eventType;
+    }
+
+    // Filter by star rating
+    if (rating) {
+      query.rating = rating;
+    }
+
+    // Fetch the experts using the constructed query
+    const experts = await IndustryExpert.find(query).sort({ eventDate: -1 }).limit(20); // Default to last 20 records
+
     // Return the experts in the response
     res.status(200).json(experts);
   } catch (error) {
@@ -56,6 +67,7 @@ exports.getIndustryExperts = async (req, res) => {
     res.status(500).json({ message: 'Error fetching Industry Experts', error: error.message });
   }
 };
+
 
 // Get a single Industry Expert by ID
 exports.getIndustryExpertById = async (req, res) => {
@@ -115,23 +127,34 @@ exports.deleteIndustryExpert = async (req, res) => {
 };
 
 // Fetch all unique domains from Industry Experts
-exports.getDomains = async (req, res) => {
+exports.getUniqueDomains = async (req, res) => {
   try {
     const domains = await IndustryExpert.distinct('domainOfExpertise'); // Get unique domains
     res.status(200).json(domains); // Return the list of unique domains
   } catch (error) {
-    console.error('Error fetching domains:', error);
-    res.status(500).json({ message: 'Error fetching domains', error: error.message });
+    console.error('Error fetching unique domains:', error);
+    res.status(500).json({ message: 'Error fetching unique domains', error: error.message });
   }
 };
 
 // Fetch all unique locations from Industry Experts
-exports.getLocations = async (req, res) => {
+exports.getUniqueLocations = async (req, res) => {
   try {
     const locations = await IndustryExpert.distinct('companyAddress'); // Get unique locations
     res.status(200).json(locations); // Return the list of unique locations
   } catch (error) {
-    console.error('Error fetching locations:', error);
-    res.status(500).json({ message: 'Error fetching locations', error: error.message });
+    console.error('Error fetching unique locations:', error);
+    res.status(500).json({ message: 'Error fetching unique locations', error: error.message });
+  }
+};
+
+// Fetch all unique event types from Industry Experts
+exports.getUniqueEventTypes = async (req, res) => {
+  try {
+    const eventTypes = await IndustryExpert.distinct('eventType'); // Get unique event types
+    res.status(200).json(eventTypes); // Return the list of unique event types
+  } catch (error) {
+    console.error('Error fetching unique event types:', error);
+    res.status(500).json({ message: 'Error fetching unique event types', error: error.message });
   }
 };

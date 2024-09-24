@@ -7,28 +7,34 @@
         <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
             <label class="block mb-2 text-sm font-bold">Firstname *</label>
-            <input v-model="firstname" type="text" required class="w-full p-2 border border-gray-300 rounded" placeholder="Enter firstname" />
+            <input v-model="firstname" type="text" required class="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter firstname" />
           </div>
           <div>
             <label class="block mb-2 text-sm font-bold">Lastname *</label>
-            <input v-model="lastname" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter lastname" />
+            <input v-model="lastname" type="text" class="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter lastname" />
           </div>
           <div>
             <label class="block mb-2 text-sm font-bold">Phone Number *</label>
-            <input v-model="phoneNumber" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter phone number" />
+            <input v-model="phoneNumber" type="text" class="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter phone number" />
           </div>
           <div>
             <label class="block mb-2 text-sm font-bold">Mail ID *</label>
-            <input v-model="mailId" type="email" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter mail ID" />
+            <input v-model="mailId" type="email" class="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter mail ID" />
           </div>
           <div>
             <label class="block mb-2 text-sm font-bold">Domain of Expertise *</label>
-            <input v-model="domainOfExpertise" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter domain" />
+            <input v-model="domainOfExpertise" type="text" class="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter domain" />
           </div>
           <div>
             <label class="block mb-2 text-sm font-bold">Is an Alumnus of BIT? *</label>
             <div class="flex">
-              <label class="mr-4"><input v-model="alumnusOfBIT" type="radio" name="alumnus" value="Yes" class="mr-2"> Yes</label>
+              <label class="mr-4"><input v-model="alumnusOfBIT" type="radio" name="alumnus" value="Yes" class="mr-2">
+                Yes</label>
               <label><input v-model="alumnusOfBIT" type="radio" name="alumnus" value="No" class="mr-2"> No</label>
             </div>
           </div>
@@ -38,19 +44,23 @@
         <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
             <label class="block mb-2 text-sm font-bold">Company Name *</label>
-            <input v-model="companyName" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter company name" />
+            <input v-model="companyName" type="text" class="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter company name" />
           </div>
           <div>
             <label class="block mb-2 text-sm font-bold">Company Address *</label>
-            <input v-model="companyAddress" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter company address" />
+            <input v-model="companyAddress" type="text" class="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter company address" />
           </div>
           <div>
             <label class="block mb-2 text-sm font-bold">Phone Number *</label>
-            <input v-model="companyPhoneNumber" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter phone number" />
+            <input v-model="companyPhoneNumber" type="text" class="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter phone number" />
           </div>
           <div>
             <label class="block mb-2 text-sm font-bold">Mail ID *</label>
-            <input v-model="companyMailId" type="email" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter mail ID" />
+            <input v-model="companyMailId" type="email" class="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter mail ID" />
           </div>
         </div>
 
@@ -58,15 +68,18 @@
         <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
             <label class="block mb-2 text-sm font-bold">Date *</label>
-            <input v-model="eventDate" type="date" required class="w-full p-2 border border-gray-300 rounded" placeholder="DD/MM/YYYY" />
+            <input v-model="eventDate" type="date" required class="w-full p-2 border border-gray-300 rounded"
+              placeholder="DD/MM/YYYY" />
           </div>
           <div>
             <label class="block mb-2 text-sm font-bold">Type of Event *</label>
-            <input v-model="eventType" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter event type" />
+            <input v-model="eventType" type="text" class="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter event type" />
           </div>
           <div>
             <label class="block mb-2 text-sm font-bold">Event Coordinator *</label>
-            <input v-model="eventCoordinator" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter coordinator name" />
+            <input v-model="eventCoordinator" type="text" class="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter coordinator name" />
           </div>
         </div>
 
@@ -74,14 +87,19 @@
         <div class="mb-4">
           <label class="block mb-2 text-sm font-bold">Rate the Overall Experience:</label>
           <div class="flex">
-            <span v-for="star in 5" :key="star" class="text-2xl" @click="rating = star" :class="star <= rating ? 'text-yellow-500' : 'text-gray-300'">★</span>
+            <span v-for="star in 5" :key="star" class="text-2xl" @click="rating = star"
+              :class="star <= rating ? 'text-yellow-500' : 'text-gray-300'">★</span>
           </div>
         </div>
-
-        <!-- Submit Button -->
-        <div>
-          <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded">
+        <!-- Submit and Delete Buttons -->
+        <div class="flex justify-between items-center">
+          <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded mr-4">
             {{ isEditing ? 'Update' : 'Save' }}
+          </button>
+          <!-- Only show the Delete button in edit mode -->
+          <button v-if="isEditing" @click.prevent="deleteExpert" type="button"
+            class="w-full bg-red-600 text-white p-2 rounded">
+            Delete
           </button>
         </div>
       </form>
@@ -189,6 +207,28 @@ async function submitForm() {
   }
 }
 
+// New deleteExpert function
+async function deleteExpert() {
+  const confirmDelete = confirm("Are you sure you want to delete this expert?");
+  if (!confirmDelete) return;
+
+  try {
+    const response = await fetch(`http://localhost:3000/api/industry-expert/experts/${route.params.id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete expert');
+    }
+
+    alert('Expert deleted successfully!');
+    router.push('/dashboard/industry-expert');
+  } catch (error) {
+    console.error('Error deleting expert:', error);
+    alert('Failed to delete expert');
+  }
+}
+
 onMounted(() => {
   if (route.params.id) {
     isEditing.value = true;
@@ -196,6 +236,7 @@ onMounted(() => {
   }
 });
 </script>
+
 
 <style scoped>
 body,
