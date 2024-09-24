@@ -1,13 +1,21 @@
 <template>
   <div>
     <h1 class="text-2xl font-bold mb-4 text-black">Faculty Visits</h1>
+    
+    <!-- New Button to Add Faculty Visit -->
+    <router-link to="/dashboard/faculty-visit/new">
+      <button class="bg-blue-500 text-white py-2 px-4 rounded mb-4 hover:bg-blue-600 transition">
+        Add New Faculty Visit
+      </button>
+    </router-link>
+    
     <FacultyVisitTable :visits="visits" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import FacultyVisitTable from './FacultyVisitTable.vue'; // Import your table component
+import FacultyVisitTable from '../components/FacultyVisitTable.vue';
 
 const visits = ref([]);
 

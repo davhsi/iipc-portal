@@ -1,94 +1,167 @@
-<script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-
-const firstname = ref('');
-const lastname = ref('');
-const facultyid = ref('');
-const phone = ref('');
-const mailid = ref('');
-const event = ref('');
-const typeevent = ref('');
-const eventDate = ref('');
-const eventLocation = ref('');
-const eventOrganizer = ref('');
-const isEditing = ref(false);
-const loading = ref(false);
-
-const router = useRouter();
-const route = useRoute();
-
-const fetchVisitData = async (id) => {
+<template>
+    <div class="flex min-h-screen">
+      <main class="w-4/5 bg-gray-50 p-8">
+        <h1 class="text-3xl font-bold mb-6">{{ isEditing ? 'Edit Faculty Visit' : 'New Faculty Visit' }}</h1>
+  
+        <form class="bg-white p-8 shadow-md rounded-lg" @submit.prevent="submitForm">
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block mb-2 text-sm font-bold">First Name *</label>
+              <input v-model="firstname" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter first name" required />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-bold">Last Name *</label>
+              <input v-model="lastname" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter last name" required />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-bold">Faculty ID *</label>
+              <input v-model="facultyid" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter faculty ID" required />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-bold">Phone *</label>
+              <input v-model="phone" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter phone number" required />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-bold">Email *</label>
+              <input v-model="mailid" type="email" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter email" required />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-bold">Event *</label>
+              <input v-model="event" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter event" required />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-bold">Type of Event *</label>
+              <input v-model="typeevent" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter type of event" required />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-bold">Date *</label>
+              <input v-model="eventDate" type="date" class="w-full p-2 border border-gray-300 rounded" required />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-bold">Event Location *</label>
+              <input v-model="eventLocation" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter event location" required />
+            </div>
+            <div>
+              <label class="block mb-2 text-sm font-bold">Event Organizer *</label>
+              <input v-model="eventOrganizer" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter event organizer" required />
+            </div>
+          </div>
+  
+          <div>
+            <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded" :disabled="loading">
+              {{ isEditing ? 'Update' : 'Save' }} {{ loading ? '...' : '' }}
+            </button>
+          </div>
+        </form>
+      </main>
+    </div>
+  </template>
+  
+  <script setup>
+  import { ref, onMounted } from 'vue';
+  import { useRouter, useRoute } from 'vue-router';
+  
+  const firstname = ref('');
+  const lastname = ref('');
+  const facultyid = ref('');
+  const phone = ref('');
+  const mailid = ref('');
+  const event = ref('');
+  const typeevent = ref('');
+  const eventDate = ref('');
+  const eventLocation = ref('');
+  const eventOrganizer = ref('');
+  const isEditing = ref(false);
+  const loading = ref(false);
+  
+  const router = useRouter();
+  const route = useRoute();
+  
+  const fetchVisitData = async (id) => {
     try {
-        const response = await fetch(`http://localhost:3000/api/faculty-visits/${id}`);
-        const visit = await response.json();
-
-        firstname.value = visit.firstname;
-        lastname.value = visit.lastname;
-        facultyid.value = visit.facultyid;
-        phone.value = visit.phone;
-        mailid.value = visit.mailid;
-        event.value = visit.event;
-        typeevent.value = visit.typeevent;
-        eventDate.value = visit.eventDate.split('T')[0]; // Format to yyyy-MM-dd
-        eventLocation.value = visit.eventLocation;
-        eventOrganizer.value = visit.eventOrganizer;
+      const response = await fetch(`http://localhost:3000/api/faculty-visits/${id}`);
+      if (!response.ok) {
+        throw new Error('Error fetching visit data');
+      }
+      const visit = await response.json();
+      
+      firstname.value = visit.firstname;
+      lastname.value = visit.lastname;
+      facultyid.value = visit.facultyid;
+      phone.value = visit.phone;
+      mailid.value = visit.mailid;
+      event.value = visit.event;
+      typeevent.value = visit.typeevent;
+      eventDate.value = visit.eventDate.split('T')[0]; // Format to yyyy-MM-dd
+      eventLocation.value = visit.eventLocation;
+      eventOrganizer.value = visit.eventOrganizer;
     } catch (error) {
-        console.error('Error fetching visit data:', error);
+      console.error('Error fetching visit data:', error);
+      alert('Failed to load visit data');
     }
-};
-
-const submitForm = async () => {
+  };
+  
+  const submitForm = async () => {
     loading.value = true; // Show loading indicator
     try {
-        // Prepare the form data
-        const formData = {
-            firstname: firstname.value,
-            lastname: lastname.value,
-            facultyid: facultyid.value,
-            phone: phone.value,
-            mailid: mailid.value,
-            event: event.value,
-            typeevent: typeevent.value,
-            eventDate: eventDate.value, // Make sure this is in the correct format
-            eventLocation: eventLocation.value,
-            eventOrganizer: eventOrganizer.value,
-        };
-
-        console.log('Form data being sent:', formData); // Log the form data
-
-        const url = isEditing.value
-            ? `http://localhost:3000/api/faculty-visits/${route.params.id}`
-            : 'http://localhost:3000/api/faculty-visits';
-
-        const response = await fetch(url, {
-            method: isEditing.value ? 'PUT' : 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
-        });
-
-        // Check if the response is ok
-        if (!response.ok) {
-            const errorResponse = await response.json(); // Parse the error response
-            console.error('Error details:', errorResponse); // Log the error details
-            throw new Error(errorResponse.message || 'Failed to submit form');
-        }
-
-        // If successful, display success message and redirect
-        alert('Visit submitted successfully!');
-        router.push('/dashboard/faculty-visit');
+      // Prepare the form data
+      const formData = {
+        firstname: firstname.value,
+        lastname: lastname.value,
+        facultyid: facultyid.value,
+        phone: phone.value,
+        mailid: mailid.value,
+        event: event.value,
+        typeevent: typeevent.value,
+        eventDate: new Date(eventDate.value), // Convert to Date object
+        eventLocation: eventLocation.value,
+        eventOrganizer: eventOrganizer.value,
+      };
+  
+      console.log('Form data being sent:', formData); // Log the form data
+  
+      const url = isEditing.value
+        ? `http://localhost:3000/api/faculty-visits/${route.params.id}`
+        : 'http://localhost:3000/api/faculty-visits';
+  
+      const response = await fetch(url, {
+        method: isEditing.value ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+  
+      // Check if the response is ok
+      if (!response.ok) {
+        const errorResponse = await response.json(); // Parse the error response
+        console.error('Error details:', errorResponse); // Log the error details
+        throw new Error(errorResponse.message || 'Failed to submit form');
+      }
+  
+      // If successful, display success message and redirect
+      alert('Visit submitted successfully!');
+      router.push('/dashboard/faculty-visit');
     } catch (error) {
-        console.error('Failed to submit form:', error);
-        alert(`Error: ${error.message}`); // Show specific error message
+      console.error('Failed to submit form:', error);
+      alert(`Error: ${error.message}`); // Show specific error message
     } finally {
-        loading.value = false; // Hide loading indicator
+      loading.value = false; // Hide loading indicator
     }
-};
-
-onMounted(() => {
+  };
+  
+  onMounted(() => {
     if (route.params.id) {
-        isEditing.value = true;
-        fetchVisitData(route.params.id);
+      isEditing.value = true;
+      fetchVisitData(route.params.id);
     }
-});
-</script>
+  });
+  </script>
+  
+  <style scoped>
+  body,
+  h1,
+  label,
+  input {
+    color: black;
+  }
+  </style>
+  
