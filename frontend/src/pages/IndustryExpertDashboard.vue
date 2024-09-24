@@ -1,16 +1,11 @@
 <template>
   <div>
     <Header title="Industry Experts Dashboard" />
-
-    <div class="flex justify-between items-center mt-6">
-      <SearchFilters />
-      <SortActions :data="experts" />
-    </div>
-
     <NewButton />
-
     <div class="mt-6">
-      <Table :data="experts" @edit="editExpert" />
+      <Table v-if="experts.length" :data="experts" @edit="editExpert" />
+      <p v-else>No experts found.</p>
+      <p v-if="loading">Loading experts...</p>
     </div>
   </div>
 </template>
@@ -19,17 +14,16 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Header from '../components/Header.vue';
-import Table from '../components/Table.vue';
-import SearchFilters from '../components/SearchFilters.vue';
-import SortActions from '../components/SortActions.vue';
+import Table from '../components/IndustryExpertTable.vue';
 import NewButton from '../components/NewButton.vue';
 
 const experts = ref([]);
+const loading = ref(true); // Added loading state
 const router = useRouter();
 
 const fetchExperts = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/experts');
+    const response = await fetch(`http://localhost:3000/api/industry-expert/experts`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -37,6 +31,8 @@ const fetchExperts = async () => {
   } catch (error) {
     console.error('Error fetching experts:', error.message);
     alert('Failed to fetch experts. Please check the console for more details.');
+  } finally {
+    loading.value = false; // Set loading to false after fetching
   }
 };
 
@@ -51,33 +47,22 @@ onMounted(() => {
 
 <style scoped>
 div {
-  color: black;
+  @apply text-black;
 }
 
 button {
-  color: white;
-}
-
-.mt-6 {
-  margin-top: 1.5rem;
-}
-
-input,
-select,
-button {
-  transition: all 0.3s ease;
+  @apply text-white;
 }
 
 input:focus,
 select:focus,
 button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  @apply outline-none ring-2 ring-blue-300;
 }
 
 .fa-search,
 .fa-download,
 .fa-ellipsis-v {
-  font-size: 1rem;
+  @apply text-lg;
 }
 </style>

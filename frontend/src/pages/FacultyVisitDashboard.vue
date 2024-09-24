@@ -1,83 +1,28 @@
 <template>
   <div>
-    <Header title="Faculty Visit Dashboard" />
-
-    <div class="flex justify-between items-center mt-6">
-      <SearchFilters />
-      <SortActions />
-    </div>
-
-    <NewButton />
-
-    <div class="mt-6">
-      <Table :data="experts" @edit="editExpert" />
-    </div>
+    <h1 class="text-2xl font-bold mb-4 text-black">Faculty Visits</h1>
+    <FacultyVisitTable :visits="visits" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import Header from '../components/Header.vue';
-import Table from '../components/Table.vue';
-import SearchFilters from '../components/SearchFilters.vue';
-import SortActions from '../components/SortActions.vue';
-import NewButton from '../components/NewButton.vue';
+import FacultyVisitTable from './FacultyVisitTable.vue'; // Import your table component
 
-const experts = ref([]);
-const router = useRouter();
+const visits = ref([]);
 
-const fetchExperts = async () => {
-  try {
-    const response = await fetch('http://localhost:3000/api/experts');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    experts.value = await response.json();
-  } catch (error) {
-    console.error('Error fetching experts:', error.message);
-    alert('Failed to fetch experts. Please check the console for more details.');
-  }
-};
-
-const editExpert = (expertId) => {
-  router.push(`/dashboard/industry-expert/edit/${expertId}`);
+const fetchVisits = async () => {
+  const response = await fetch('http://localhost:3000/api/faculty-visits');
+  visits.value = await response.json();
 };
 
 onMounted(() => {
-  fetchExperts();
+  fetchVisits();
 });
 </script>
 
 <style scoped>
-div {
+.text-black {
   color: black;
-}
-
-button {
-  color: white;
-}
-
-.mt-6 {
-  margin-top: 1.5rem;
-}
-
-input,
-select,
-button {
-  transition: all 0.3s ease;
-}
-
-input:focus,
-select:focus,
-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.fa-search,
-.fa-download,
-.fa-ellipsis-v {
-  font-size: 1rem;
 }
 </style>

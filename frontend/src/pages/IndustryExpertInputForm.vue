@@ -1,16 +1,13 @@
 <template>
   <div class="flex min-h-screen">
-    <!-- Main Content -->
     <main class="w-4/5 bg-gray-50 p-8">
       <h1 class="text-3xl font-bold mb-6">{{ isEditing ? 'Edit Industry Expert' : 'New Industry Expert' }}</h1>
-
-      <!-- Form -->
       <form class="bg-white p-8 shadow-md rounded-lg" @submit.prevent="submitForm">
         <!-- Personal Details -->
         <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
             <label class="block mb-2 text-sm font-bold">Firstname *</label>
-            <input v-model="firstname" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter firstname" />
+            <input v-model="firstname" type="text" required class="w-full p-2 border border-gray-300 rounded" placeholder="Enter firstname" />
           </div>
           <div>
             <label class="block mb-2 text-sm font-bold">Lastname *</label>
@@ -61,7 +58,7 @@
         <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
             <label class="block mb-2 text-sm font-bold">Date *</label>
-            <input v-model="eventDate" type="text" class="w-full p-2 border border-gray-300 rounded" placeholder="DD/MM/YYYY" />
+            <input v-model="eventDate" type="date" required class="w-full p-2 border border-gray-300 rounded" placeholder="DD/MM/YYYY" />
           </div>
           <div>
             <label class="block mb-2 text-sm font-bold">Type of Event *</label>
@@ -93,8 +90,6 @@
 </template>
 
 <script setup>
-import Sidebar from '../components/Sidebar.vue';
-
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
@@ -112,14 +107,19 @@ const eventDate = ref('');
 const eventType = ref('');
 const eventCoordinator = ref('');
 const rating = ref(0);
+const isEditing = ref(false); // Ensure this is declared
 
 const router = useRouter();
 const route = useRoute();
-const isEditing = ref(false);
 
 const fetchExpertData = async (id) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/experts/${id}`);
+    const response = await fetch(`http://localhost:3000/api/industry-expert/experts/${id}`);
+
+    if (!response.ok) {
+      throw new Error(`Error fetching expert data: ${response.statusText}`);
+    }
+
     const expert = await response.json();
 
     // Populate fields with existing data
@@ -133,18 +133,23 @@ const fetchExpertData = async (id) => {
     companyAddress.value = expert.companyAddress;
     companyPhoneNumber.value = expert.companyPhoneNumber;
     companyMailId.value = expert.companyMailId;
-    eventDate.value = expert.eventDate;
+
+    // Convert eventDate to yyyy-MM-dd format
+    const date = new Date(expert.eventDate);
+    eventDate.value = date.toISOString().split('T')[0]; // Set to yyyy-MM-dd format
+
     eventType.value = expert.eventType;
     eventCoordinator.value = expert.eventCoordinator;
     rating.value = expert.rating;
   } catch (error) {
     console.error('Error fetching expert data:', error);
+    alert('Failed to fetch expert data. Please check the console for details.');
   }
 };
 
+
 async function submitForm() {
   try {
-    // Create formData object
     const formData = {
       firstname: firstname.value,
       lastname: lastname.value,
@@ -159,12 +164,12 @@ async function submitForm() {
       eventDate: eventDate.value,
       eventType: eventType.value,
       eventCoordinator: eventCoordinator.value,
-      rating: rating.value
+      rating: rating.value,
     };
 
     const url = isEditing.value
-      ? `http://localhost:3000/api/experts/${route.params.id}`
-      : 'http://localhost:3000/api/experts';
+      ? `http://localhost:3000/api/industry-expert/experts/${route.params.id}`
+      : 'http://localhost:3000/api/industry-expert/experts';
     
     const response = await fetch(url, {
       method: isEditing.value ? 'PUT' : 'POST',
@@ -176,7 +181,6 @@ async function submitForm() {
       throw new Error('Failed to submit form');
     }
 
-    // Success handling: show success message and redirect
     alert('Expert updated successfully!');
     router.push('/dashboard/industry-expert');
   } catch (error) {
@@ -185,7 +189,6 @@ async function submitForm() {
   }
 }
 
-// If editing, fetch existing data
 onMounted(() => {
   if (route.params.id) {
     isEditing.value = true;

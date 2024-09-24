@@ -7,17 +7,18 @@
       <p class="text-gray-400 mb-6">Stay Ahead</p>
       <p class="text-gray-500 mb-8">IIPC BIT</p>
 
-      <!-- Input fields with Tailwind CSS classes -->
       <input 
         v-model="email" 
         type="email" 
         placeholder="Email" 
+        required
         class="mb-4 p-3 w-full rounded-lg bg-dark-700 text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
       <input 
         v-model="password" 
         type="password" 
         placeholder="Password" 
+        required
         class="mb-6 p-3 w-full rounded-lg bg-dark-700 text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
 
@@ -48,6 +49,10 @@ const loading = ref(false);
 const router = useRouter();
 
 const login = async () => {
+  if (!email.value || !password.value) {
+    errorMessage.value = 'Please enter your email and password.';
+    return;
+  }
   loading.value = true;
   try {
     const response = await axios.post('http://localhost:3000/login', {
