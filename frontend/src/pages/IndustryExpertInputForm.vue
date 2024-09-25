@@ -84,24 +84,28 @@
         </div>
 
         <!-- Rating -->
+        <!-- Update this part in your FacultyVisitInputForm.vue -->
         <div class="mb-4">
           <label class="block mb-2 text-sm font-bold">Rate the Overall Experience:</label>
           <div class="flex">
-            <span v-for="star in 5" :key="star" class="text-2xl" @click="rating = star"
-              :class="star <= rating ? 'text-yellow-500' : 'text-gray-300'">★</span>
-          </div>
-        </div>
+            <span v-for="star in 5" :key="star" class="star" 
+              @click="rating = star"
+              :class="star <= rating ? 'text-yellow-500' : 'text-gray-300'"
+    >★</span>
+  </div>
+</div>
+
         <!-- Submit and Delete Buttons -->
-        <div class="flex justify-between items-center">
-          <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded mr-4">
-            {{ isEditing ? 'Update' : 'Save' }}
-          </button>
-          <!-- Only show the Delete button in edit mode -->
-          <button v-if="isEditing" @click.prevent="deleteExpert" type="button"
-            class="w-full bg-red-600 text-white p-2 rounded">
-            Delete
-          </button>
-        </div>
+        <div class=" flex justify-between items-center">
+                <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded mr-4">
+                  {{ isEditing ? 'Update' : 'Save' }}
+                </button>
+                <!-- Only show the Delete button in edit mode -->
+                <button v-if="isEditing" @click.prevent="deleteExpert" type="button"
+                  class="w-full bg-red-600 text-white p-2 rounded">
+                  Delete
+                </button>
+          </div>
       </form>
     </main>
   </div>
@@ -132,7 +136,7 @@ const route = useRoute();
 
 const fetchExpertData = async (id) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/industry-expert/experts/${id}`);
+    const response = await fetch(`http://localhost:3000/api/industry-experts/experts/${id}`);
 
     if (!response.ok) {
       throw new Error(`Error fetching expert data: ${response.statusText}`);
@@ -186,9 +190,9 @@ async function submitForm() {
     };
 
     const url = isEditing.value
-      ? `http://localhost:3000/api/industry-expert/experts/${route.params.id}`
-      : 'http://localhost:3000/api/industry-expert/experts';
-    
+      ? `http://localhost:3000/api/industry-experts/experts/${route.params.id}`
+      : 'http://localhost:3000/api/industry-experts/experts';
+
     const response = await fetch(url, {
       method: isEditing.value ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -245,4 +249,16 @@ label,
 input {
   color: black;
 }
+
+/* Add this to your main.css or in the <style> section of App.vue */
+.star {
+  font-size: 24px; /* Ensure size is consistent */
+  cursor: pointer; /* Change cursor on hover */
+  transition: color 0.2s ease; /* Smooth transition */
+}
+
+.star:hover {
+  color: #FFD700; /* Change color on hover */
+}
+
 </style>

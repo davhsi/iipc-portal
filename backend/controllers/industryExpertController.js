@@ -37,7 +37,7 @@ exports.getIndustryExperts = async (req, res) => {
     if (eventType) query.eventType = eventType;
     if (rating) query.rating = rating;
 
-    const experts = await IndustryExpert.find(query).sort({ eventDate: -1 }).limit(20);
+    const experts = await IndustryExpert.find(query).sort({ eventDate: -1 }).limit(10);
 
     res.status(200).json(experts);
   } catch (error) {

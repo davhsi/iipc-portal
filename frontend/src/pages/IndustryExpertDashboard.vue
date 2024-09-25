@@ -95,10 +95,16 @@
             <td class="border-t px-3 py-2 text-black">{{ expert.companyName || 'N/A' }}</td>
             <td class="border-t px-3 py-2 text-black">{{ expert.eventType || 'N/A' }}</td>
             <td class="border-t px-3 py-2 text-black">{{ formatDate(expert.eventDate) }}</td>
-            <td class="border-t px-3 py-2 text-black">{{ expert.rating }} Star</td>
+            <td class="border-t px-3 py-2 text-black">
+              <div class="flex">
+                <span v-for="star in 5" :key="star" class="text-yellow-500">
+                  <i :class="{ 'fas fa-star': expert.rating >= star, 'far fa-star': expert.rating < star }"></i>
+                </span>
+              </div>
+            </td>
             <td class="border-t px-4 py-2 text-center">
               <button class="bg-blue-500 text-white py-1 px-2 rounded mr-2 hover:bg-blue-600 transition"
-                @click="$emit('edit', expert._id)">
+                @click="editIndustryExpert(expert._id)">
                 <i class="fas fa-edit"></i>
               </button>
             </td>
@@ -110,11 +116,15 @@
   </div>
 </template>
 
+
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';  // Import useRouter
 import Header from '../components/Header.vue';
 import NewButton from '../components/NewButton.vue';
 import axios from 'axios';
+
+const router = useRouter();  // Create a router instance
 
 const industryExperts = ref([]);
 const startDate = ref('');
@@ -127,12 +137,15 @@ const uniqueDomains = ref([]);
 const uniqueLocations = ref([]);
 const uniqueEventTypes = ref([]);
 const uniqueStarRatings = ref([]);
+const page = ref(1); // Define the page variable
 
 onMounted(async () => {
   await fetchUniqueFilters();
   await fetchIndustryExperts();
 });
 
+
+// Fetch unique filters from the API
 const fetchUniqueFilters = async () => {
   try {
     const [domainsResponse, locationsResponse, typesResponse, ratingsResponse] = await Promise.all([
@@ -151,9 +164,10 @@ const fetchUniqueFilters = async () => {
   }
 };
 
+// Fetch industry experts based on filters
 const fetchIndustryExperts = async (filters = {}) => {
   try {
-    const query = new URLSearchParams(filters).toString(); // Convert filters to query string
+    const query = new URLSearchParams({ ...filters, limit: 10, page: page.value }).toString(); // Use page.value
     const response = await axios.get(`http://localhost:3000/api/industry-experts/experts?${query}`);
     industryExperts.value = response.data;
     console.log('Fetched Industry Experts:', industryExperts.value);
@@ -162,7 +176,7 @@ const fetchIndustryExperts = async (filters = {}) => {
   }
 };
 
-
+// Search for industry experts based on filters
 const searchIndustryExperts = () => {
   const filters = {
     startDate: startDate.value || undefined,
@@ -176,7 +190,7 @@ const searchIndustryExperts = () => {
   fetchIndustryExperts(Object.fromEntries(Object.entries(filters).filter(([_, v]) => v)));
 };
 
-
+// Clear filters and fetch all industry experts
 const clearFilters = () => {
   startDate.value = '';
   endDate.value = '';
@@ -188,7 +202,12 @@ const clearFilters = () => {
 };
 
 const formatDate = (date) => new Date(date).toLocaleDateString();
+
+const editIndustryExpert = (id) => {
+  router.push({ name: 'EditIndustryExpert', params: { id } }); // Navigate to edit page
+};
 </script>
+
 
 <style scoped>
 .grid {
@@ -221,5 +240,15 @@ td {
 
 button {
   @apply text-sm px-3 py-1;
+}
+
+.star {
+  font-size: 24px; /* Ensure size is consistent */
+  cursor: pointer; /* Change cursor on hover */
+  transition: color 0.2s ease; /* Smooth transition */
+}
+
+.star:hover {
+  color: #FFD700; /* Change color on hover */
 }
 </style>
