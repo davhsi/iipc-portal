@@ -1,268 +1,225 @@
 <template>
-  <div>
-    <Header title="Industry Experts Dashboard" />
-    <NewButton />
+  <div class="h-screen flex flex-col">
+    <!-- Heading and New Button -->
+    <div class="flex justify-between items-center mb-4">
+      <Header title="Industry Expert Dashboard" />
+      <NewButton />
+    </div>
 
-    <div class="mt-6 bg-white p-6 rounded-lg shadow-md">
-      <h2 class="text-lg font-semibold mb-4">Search Filters</h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-        <!-- Existing filter fields -->
+    <!-- Search Filters Section (Static) -->
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <h2 class="text-lg font-semibold mb-4 text-black">Search Filters</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Domain of Expertise -->
         <div>
-          <label class="block mb-2 font-medium">Name:</label>
-          <input v-model="searchName" type="text" placeholder="Enter expert name" class="border p-2 rounded w-full" />
-        </div>
-        
-        <div>
-          <label class="block mb-2 font-medium">Start Date:</label>
-          <input v-model="startDate" type="date" class="border p-2 rounded w-full" />
-        </div>
-        
-        <div>
-          <label class="block mb-2 font-medium">End Date:</label>
-          <input v-model="endDate" type="date" class="border p-2 rounded w-full" />
-        </div>
-        
-        <div>
-          <label class="block mb-2 font-medium">Company Address:</label>
-          <select v-model="selectedCompanyAddress" class="border p-2 rounded w-full">
-            <option value="">Choose Company Address</option>
-            <option v-for="address in uniqueCompanyAddresses" :key="address" :value="address">{{ address }}</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block mb-2 font-medium">Domain of Expertise:</label>
-          <select v-model="selectedDomainOfExpertise" class="border p-2 rounded w-full">
+          <label class="block mb-1 font-medium text-black">Domain of Expertise:</label>
+          <select v-model="selectedDomain" class="border p-2 rounded w-full text-black">
             <option value="">Choose Domain</option>
             <option v-for="domain in uniqueDomains" :key="domain" :value="domain">{{ domain }}</option>
           </select>
         </div>
-
+        <!-- Company Address -->
         <div>
-          <label class="block mb-2 font-medium">Event Type:</label>
-          <select v-model="selectedEventType" class="border p-2 rounded w-full">
-            <option value="">Choose Event Type</option>
-            <option v-for="event in uniqueEventTypes" :key="event" :value="event">{{ event }}</option>
+          <label class="block mb-1 font-medium text-black">Company Address:</label>
+          <select v-model="selectedLocation" class="border p-2 rounded w-full text-black">
+            <option value="">Choose Location</option>
+            <option v-for="location in uniqueLocations" :key="location" :value="location">{{ location }}</option>
           </select>
         </div>
-
+        <!-- Start Date -->
         <div>
-          <label class="block mb-2 font-medium">Star Rating:</label>
-          <select v-model="selectedRating" class="border p-2 rounded w-full">
+          <label class="block mb-1 font-medium text-black">Start Date:</label>
+          <input v-model="startDate" type="date" class="border p-2 rounded w-full text-black" />
+        </div>
+        <!-- End Date -->
+        <div>
+          <label class="block mb-1 font-medium text-black">End Date:</label>
+          <input v-model="endDate" type="date" class="border p-2 rounded w-full text-black" />
+        </div>
+        <!-- Event Type -->
+        <div>
+          <label class="block mb-1 font-medium text-black">Event Type:</label>
+          <select v-model="selectedEventType" class="border p-2 rounded w-full text-black">
+            <option value="">Choose Event Type</option>
+            <option v-for="type in uniqueEventTypes" :key="type" :value="type">{{ type }}</option>
+          </select>
+        </div>
+        <!-- Star Ratings -->
+        <div>
+          <label class="block mb-1 font-medium text-black">Star Ratings:</label>
+          <select v-model="selectedStarRating" class="border p-2 rounded w-full text-black">
             <option value="">Choose Rating</option>
-            <option value="5">5 Stars</option>
-            <option value="4">4 Stars</option>
-            <option value="3">3 Stars</option>
-            <option value="2">2 Stars</option>
-            <option value="1">1 Star</option>
+            <option v-for="rating in uniqueStarRatings" :key="rating" :value="rating">{{ rating }} Star</option>
           </select>
         </div>
       </div>
 
-      <!-- Flex container for buttons, aligned to the left -->
-      <div class="flex justify-start items-center space-x-4 mb-4">
-        <button
-          @click="searchExperts"
-          class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-200"
-        >
+      <!-- Search, Clear, and Export Buttons -->
+      <div class="flex justify-start items-center space-x-2 mt-4">
+        <button @click="searchIndustryExperts"
+          class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-sm">
           Search
         </button>
-
-        <button
-          @click="exportToExcel"
-          class="bg-green-500 text-white p-2 rounded hover:bg-green-600 transition duration-200"
-        >
+        <button @click="clearFilters"
+          class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition text-sm">
+          Clear
+        </button>
+        <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-sm">
           Export to Excel
         </button>
-
-        <button
-          @click="clearFilters"
-          class="bg-gray-500 text-white p-2 rounded hover:bg-gray-600 transition duration-200"
-        >
-          Clear Filters
-        </button>
       </div>
+    </div>
 
-      <Table v-if="experts.length" :data="experts" @edit="editExpert" class="mt-6 w-full" />
-      <p v-else>No experts found.</p>
-      <p v-if="loading">Loading experts...</p>
+    <!-- Scrollable Table Section -->
+    <div class="mt-6 bg-white p-4 rounded-lg shadow-md flex-grow overflow-y-auto">
+      <table class="min-w-full border-collapse">
+        <thead class="bg-gray-200 sticky top-0 z-10">
+          <tr>
+            <th class="px-3 py-2 text-left text-black">S.No</th>
+            <th class="px-3 py-2 text-left text-black">First Name</th>
+            <th class="px-3 py-2 text-left text-black">Last Name</th>
+            <th class="px-3 py-2 text-left text-black">Domain</th>
+            <th class="px-3 py-2 text-left text-black">Company</th>
+            <th class="px-3 py-2 text-left text-black">Event</th>
+            <th class="px-3 py-2 text-left text-black">Event Date</th>
+            <th class="px-3 py-2 text-left text-black">Star Rating</th>
+            <th class="px-3 py-2 text-center text-black">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(expert, index) in industryExperts" :key="expert._id" class="hover:bg-gray-50">
+            <td class="border-t px-3 py-2 text-black">{{ index + 1 }}</td>
+            <td class="border-t px-3 py-2 text-black">{{ expert.firstname }}</td>
+            <td class="border-t px-3 py-2 text-black">{{ expert.lastname }}</td>
+            <td class="border-t px-3 py-2 text-black">{{ expert.domainOfExpertise || 'N/A' }}</td>
+            <td class="border-t px-3 py-2 text-black">{{ expert.companyName || 'N/A' }}</td>
+            <td class="border-t px-3 py-2 text-black">{{ expert.eventType || 'N/A' }}</td>
+            <td class="border-t px-3 py-2 text-black">{{ formatDate(expert.eventDate) }}</td>
+            <td class="border-t px-3 py-2 text-black">{{ expert.rating }} Star</td>
+            <td class="border-t px-4 py-2 text-center">
+              <button class="bg-blue-500 text-white py-1 px-2 rounded mr-2 hover:bg-blue-600 transition"
+                @click="$emit('edit', expert._id)">
+                <i class="fas fa-edit"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
     </div>
   </div>
 </template>
 
 <script setup>
-// Existing imports
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 import Header from '../components/Header.vue';
-import Table from '../components/IndustryExpertTable.vue';
 import NewButton from '../components/NewButton.vue';
 import axios from 'axios';
-import * as XLSX from 'xlsx'; // Import xlsx library
 
-// Reactive variables
-const experts = ref([]);
-const loading = ref(true);
-const searchName = ref(''); 
+const industryExperts = ref([]);
 const startDate = ref('');
 const endDate = ref('');
-const selectedCompanyAddress = ref('');
-const selectedDomainOfExpertise = ref('');
+const selectedDomain = ref('');
+const selectedLocation = ref('');
 const selectedEventType = ref('');
-const selectedRating = ref('');
-const uniqueCompanyAddresses = ref([]);
+const selectedStarRating = ref('');
 const uniqueDomains = ref([]);
+const uniqueLocations = ref([]);
 const uniqueEventTypes = ref([]);
-const router = useRouter();
+const uniqueStarRatings = ref([]);
 
-// Fetch unique filters and experts on component mount
 onMounted(async () => {
-  loading.value = true;
-  try {
-    uniqueCompanyAddresses.value = await fetchUniqueCompanyAddresses();
-    uniqueDomains.value = await fetchUniqueDomains();
-    uniqueEventTypes.value = await fetchUniqueEventTypes();
-    
-    await fetchExperts(); 
-  } finally {
-    loading.value = false;
-  }
+  await fetchUniqueFilters();
+  await fetchIndustryExperts();
 });
 
-// Fetch experts based on filters
-const fetchExperts = async (filters = {}) => {
-  console.log('Fetching experts with filters:', filters);
+const fetchUniqueFilters = async () => {
   try {
-    const response = await axios.post('http://localhost:3000/api/industry-expert/experts/search', filters);
-    experts.value = response.data;
-    console.log('Fetched experts:', experts.value);
+    const [domainsResponse, locationsResponse, typesResponse, ratingsResponse] = await Promise.all([
+      axios.get('http://localhost:3000/api/industry-experts/domains'),
+      axios.get('http://localhost:3000/api/industry-experts/locations'),
+      axios.get('http://localhost:3000/api/industry-experts/event-types'),
+      axios.get('http://localhost:3000/api/industry-experts/star-ratings'),
+    ]);
+
+    uniqueDomains.value = domainsResponse.data;
+    uniqueLocations.value = locationsResponse.data;
+    uniqueEventTypes.value = typesResponse.data;
+    uniqueStarRatings.value = ratingsResponse.data;
   } catch (error) {
-    console.error('Error fetching experts:', error.response ? error.response.data : error.message);
+    console.error('Error fetching unique filters:', error);
   }
 };
 
-// Search button click handler
-const searchExperts = () => {
+const fetchIndustryExperts = async (filters = {}) => {
+  try {
+    const query = new URLSearchParams(filters).toString(); // Convert filters to query string
+    const response = await axios.get(`http://localhost:3000/api/industry-experts/experts?${query}`);
+    industryExperts.value = response.data;
+    console.log('Fetched Industry Experts:', industryExperts.value);
+  } catch (error) {
+    console.error('Error fetching industry experts:', error);
+  }
+};
+
+
+const searchIndustryExperts = () => {
   const filters = {
-    name: searchName.value.trim() || undefined,
     startDate: startDate.value || undefined,
     endDate: endDate.value || undefined,
-    companyAddress: selectedCompanyAddress.value || undefined,
-    domainOfExpertise: selectedDomainOfExpertise.value || undefined,
+    domainOfExpertise: selectedDomain.value || undefined,
+    companyAddress: selectedLocation.value || undefined,
     eventType: selectedEventType.value || undefined,
-    rating: selectedRating.value || undefined,
+    rating: selectedStarRating.value || undefined,
   };
 
-  const cleanedFilters = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== undefined));
-  console.log('Filters sent to server:', cleanedFilters);
-  fetchExperts(cleanedFilters);
+  fetchIndustryExperts(Object.fromEntries(Object.entries(filters).filter(([_, v]) => v)));
 };
 
-// Clear filters method
+
 const clearFilters = () => {
-  searchName.value = '';
   startDate.value = '';
   endDate.value = '';
-  selectedCompanyAddress.value = '';
-  selectedDomainOfExpertise.value = '';
+  selectedDomain.value = '';
+  selectedLocation.value = '';
   selectedEventType.value = '';
-  selectedRating.value = '';
-  fetchExperts(); // Fetch experts again with no filters
-};
-// Methods to fetch unique filters
-const fetchUniqueCompanyAddresses = async () => {
-  try {
-    const response = await fetch('http://localhost:3000/api/industry-expert/locations');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const addresses = await response.json();
-    return addresses;
-  } catch (error) {
-    console.error('Error fetching unique company addresses:', error.message);
-    alert('Failed to fetch unique company addresses. Please check the console for more details.');
-    return [];
-  }
+  selectedStarRating.value = '';
+  fetchIndustryExperts();
 };
 
-const fetchUniqueDomains = async () => {
-  try {
-    const response = await fetch('http://localhost:3000/api/industry-expert/domains');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const domains = await response.json();
-    return domains;
-  } catch (error) {
-    console.error('Error fetching unique domains:', error.message);
-    alert('Failed to fetch unique domains. Please check the console for more details.');
-    return [];
-  }
-};
-
-const fetchUniqueEventTypes = async () => {
-  try {
-    const response = await fetch('http://localhost:3000/api/industry-expert/event-types');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const eventTypes = await response.json();
-    return eventTypes;
-  } catch (error) {
-    console.error('Error fetching unique event types:', error.message);
-    alert('Failed to fetch unique event types. Please check the console for more details.');
-    return [];
-  }
-};
-
-// Method to handle editing an expert
-const editExpert = (expertId) => {
-  router.push(`/dashboard/industry-expert/edit/${expertId}`);
-};
-
-// Method to export table data to Excel
-const exportToExcel = () => {
-  if (experts.value.length === 0) {
-    alert('No data to export.');
-    return;
-  }
-
-  // Convert table data to a format suitable for Excel
-  const worksheet = XLSX.utils.json_to_sheet(experts.value);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Industry Experts');
-
-  // Create and trigger the download
-  XLSX.writeFile(workbook, 'industry_experts.xlsx');
-};
+const formatDate = (date) => new Date(date).toLocaleDateString();
 </script>
 
 <style scoped>
-div {
-  @apply text-black;
+.grid {
+  gap: 4px;
 }
 
 button {
-  @apply text-white;
+  @apply text-sm;
 }
 
-input:focus,
-select:focus,
-button:focus {
-  @apply outline-none ring-2 ring-blue-400;
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.grid {
-  @apply gap-6;
+thead th {
+  @apply bg-gray-200 sticky top-0 z-10 text-black;
+  /* Ensure header text is black */
 }
 
-.flex {
-  @apply justify-start space-x-4; /* Added space between buttons */
+th,
+td {
+  @apply border px-3 py-2 text-left;
 }
 
-input,
-select {
-  @apply p-3 border rounded w-full;
+td {
+  color: black;
+  /* Ensure table data text is black */
+}
+
+button {
+  @apply text-sm px-3 py-1;
 }
 </style>

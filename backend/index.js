@@ -46,7 +46,7 @@ app.post('/login', (req, res) => {
 
 // Use the Industry Expert routes
 
-app.use('/api/industry-expert', industryExpertRoutes);
+app.use('/api/industry-experts', industryExpertRoutes);
 app.use('/api/faculty-visits', facultyVisitRoutes);
 
 // Handle undefined routes

@@ -13,60 +13,39 @@ exports.addIndustryExpert = async (req, res) => {
 };
 
 // Get Industry Experts with filtering
-// Get Industry Experts with filtering
-// Get Industry Experts with filtering
 exports.getIndustryExperts = async (req, res) => {
   try {
-    const { name, startDate, endDate, domainOfExpertise, companyAddress, eventType, rating } = req.body;
+    const { name, startDate, endDate, domainOfExpertise, companyAddress, eventType, rating } = req.query; // Use req.query for GET
 
-    // Initialize query object
     let query = {};
 
-    // Filter by name (both first and last name)
     if (name) {
       query.$or = [
-        { firstname: { $regex: name, $options: 'i' } },  // Case-insensitive search in firstname
-        { lastname: { $regex: name, $options: 'i' } }    // Case-insensitive search in lastname
+        { firstname: { $regex: name, $options: 'i' } },
+        { lastname: { $regex: name, $options: 'i' } }
       ];
     }
 
-    // Filter by event date range
     if (startDate || endDate) {
       query.eventDate = {};
       if (startDate) query.eventDate.$gte = new Date(startDate);
       if (endDate) query.eventDate.$lte = new Date(endDate);
     }
 
-    // Filter by domain of expertise
-    if (domainOfExpertise) {
-      query.domainOfExpertise = domainOfExpertise;
-    }
+    if (domainOfExpertise) query.domainOfExpertise = domainOfExpertise;
+    if (companyAddress) query.companyAddress = companyAddress;
+    if (eventType) query.eventType = eventType;
+    if (rating) query.rating = rating;
 
-    // Filter by company address
-    if (companyAddress) {
-      query.companyAddress = companyAddress;
-    }
+    const experts = await IndustryExpert.find(query).sort({ eventDate: -1 }).limit(20);
 
-    // Filter by event type
-    if (eventType) {
-      query.eventType = eventType;
-    }
-
-    // Filter by star rating
-    if (rating) {
-      query.rating = rating;
-    }
-
-    // Fetch the experts using the constructed query
-    const experts = await IndustryExpert.find(query).sort({ eventDate: -1 }).limit(20); // Default to last 20 records
-
-    // Return the experts in the response
     res.status(200).json(experts);
   } catch (error) {
     console.error('Error fetching Industry Experts:', error);
     res.status(500).json({ message: 'Error fetching Industry Experts', error: error.message });
   }
 };
+
 
 
 // Get a single Industry Expert by ID
@@ -156,5 +135,14 @@ exports.getUniqueEventTypes = async (req, res) => {
   } catch (error) {
     console.error('Error fetching unique event types:', error);
     res.status(500).json({ message: 'Error fetching unique event types', error: error.message });
+  }
+};
+
+exports.getUniqueStarRatings = async (req, res) => {
+  try {
+    const starRatings = await IndustryExpert.distinct('rating');
+    res.status(200).json(starRatings);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching unique star ratings', error });
   }
 };

@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const industryExpertController = require('../controllers/industryExpertController');
 
+// Route to get all Industry Experts with filtering via query parameters
+router.get('/experts', industryExpertController.getIndustryExperts);
+
 // Route to add a new Industry Expert
 router.post('/experts', industryExpertController.addIndustryExpert);
 
-// Route to get all Industry Experts with filtering
-router.post('/experts/search', industryExpertController.getIndustryExperts);
 // Route to get a single Industry Expert by ID
 router.get('/experts/:id', industryExpertController.getIndustryExpertById);
 
@@ -24,5 +25,8 @@ router.get('/locations', industryExpertController.getUniqueLocations);
 
 // Route to fetch all unique event types
 router.get('/event-types', industryExpertController.getUniqueEventTypes);
+
+// Route to fetch all unique star ratings
+router.get('/star-ratings', industryExpertController.getUniqueStarRatings);
 
 module.exports = router;
