@@ -7,21 +7,22 @@
       <h2 class="text-lg font-semibold mb-4">Search Filters</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Existing filter fields -->
         <div>
           <label class="block mb-2 font-medium">Name:</label>
           <input v-model="searchName" type="text" placeholder="Enter expert name" class="border p-2 rounded w-full" />
         </div>
-
+        
         <div>
           <label class="block mb-2 font-medium">Start Date:</label>
           <input v-model="startDate" type="date" class="border p-2 rounded w-full" />
         </div>
-
+        
         <div>
           <label class="block mb-2 font-medium">End Date:</label>
           <input v-model="endDate" type="date" class="border p-2 rounded w-full" />
         </div>
-
+        
         <div>
           <label class="block mb-2 font-medium">Company Address:</label>
           <select v-model="selectedCompanyAddress" class="border p-2 rounded w-full">
@@ -74,6 +75,13 @@
         >
           Export to Excel
         </button>
+
+        <button
+          @click="clearFilters"
+          class="bg-gray-500 text-white p-2 rounded hover:bg-gray-600 transition duration-200"
+        >
+          Clear Filters
+        </button>
       </div>
 
       <Table v-if="experts.length" :data="experts" @edit="editExpert" class="mt-6 w-full" />
@@ -84,6 +92,7 @@
 </template>
 
 <script setup>
+// Existing imports
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Header from '../components/Header.vue';
@@ -92,9 +101,10 @@ import NewButton from '../components/NewButton.vue';
 import axios from 'axios';
 import * as XLSX from 'xlsx'; // Import xlsx library
 
+// Reactive variables
 const experts = ref([]);
 const loading = ref(true);
-const searchName = ref(''); // New reactive variable for search by name
+const searchName = ref(''); 
 const startDate = ref('');
 const endDate = ref('');
 const selectedCompanyAddress = ref('');
@@ -108,36 +118,34 @@ const router = useRouter();
 
 // Fetch unique filters and experts on component mount
 onMounted(async () => {
-  loading.value = true; // Start loading
+  loading.value = true;
   try {
-    // Fetch unique filters
     uniqueCompanyAddresses.value = await fetchUniqueCompanyAddresses();
     uniqueDomains.value = await fetchUniqueDomains();
     uniqueEventTypes.value = await fetchUniqueEventTypes();
     
-    // Fetch the last 20 experts by default
     await fetchExperts(); 
   } finally {
-    loading.value = false; // End loading
+    loading.value = false;
   }
 });
 
-// Method to fetch experts based on filters
+// Fetch experts based on filters
 const fetchExperts = async (filters = {}) => {
-  console.log('Fetching experts with filters:', filters); // Log filters
+  console.log('Fetching experts with filters:', filters);
   try {
     const response = await axios.post('http://localhost:3000/api/industry-expert/experts/search', filters);
     experts.value = response.data;
-    console.log('Fetched experts:', experts.value); // Log fetched experts
+    console.log('Fetched experts:', experts.value);
   } catch (error) {
     console.error('Error fetching experts:', error.response ? error.response.data : error.message);
   }
 };
 
-// Method to handle search button click
+// Search button click handler
 const searchExperts = () => {
   const filters = {
-    name: searchName.value.trim() || undefined, // Include name filter, trim whitespace
+    name: searchName.value.trim() || undefined,
     startDate: startDate.value || undefined,
     endDate: endDate.value || undefined,
     companyAddress: selectedCompanyAddress.value || undefined,
@@ -146,13 +154,22 @@ const searchExperts = () => {
     rating: selectedRating.value || undefined,
   };
 
-  // Filter out any undefined values from the filters object
   const cleanedFilters = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== undefined));
-
-  console.log('Filters sent to server:', cleanedFilters); // Log the cleaned filters
-  fetchExperts(cleanedFilters); // Fetch experts with selected filters
+  console.log('Filters sent to server:', cleanedFilters);
+  fetchExperts(cleanedFilters);
 };
 
+// Clear filters method
+const clearFilters = () => {
+  searchName.value = '';
+  startDate.value = '';
+  endDate.value = '';
+  selectedCompanyAddress.value = '';
+  selectedDomainOfExpertise.value = '';
+  selectedEventType.value = '';
+  selectedRating.value = '';
+  fetchExperts(); // Fetch experts again with no filters
+};
 // Methods to fetch unique filters
 const fetchUniqueCompanyAddresses = async () => {
   try {

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen w-64 bg-blue-800 text-gray-100 flex flex-col">
+  <div class="h-full min-h-screen w-64 bg-blue-800 text-gray-100 flex flex-col">
     <!-- Logo and Title -->
     <div class="p-5 flex flex-col items-center border-b border-blue-700">
       <img src="../assets/login.png" alt="IIPC Logo" class="w-32 h-24 mb-4" />
@@ -45,26 +45,22 @@
   </div>
 </template>
 
-<style scoped>
-
+<!-- <style scoped>
 a.active {
-  background-color: #1e3a8a; 
+  background-color: #1e3a8a;
 }
-
 
 a:hover {
-  background-color: #2b4d8d; 
+  background-color: #2b4d8d;
 }
-
 
 h2 {
-  color: #e2e8f0; 
+  color: #e2e8f0;
 }
 
-
 @media (max-width: 768px) {
-  .h-screen {
+  .h-full {
     height: auto;
   }
 }
-</style>
+</style> -->
