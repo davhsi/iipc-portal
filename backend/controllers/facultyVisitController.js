@@ -69,7 +69,6 @@ exports.getUniqueEventTypes = async (req, res) => {
     }
 };
 
-// Controller for deleting a faculty visit
 exports.deleteFacultyVisit = async (req, res) => {
     try {
         const deletedVisit = await FacultyVisit.findByIdAndDelete(req.params.id);
@@ -79,9 +78,11 @@ exports.deleteFacultyVisit = async (req, res) => {
         res.status(200).json({ message: 'Faculty visit deleted successfully' });
     } catch (error) {
         console.error('Error deleting faculty visit:', error);
-        res.status(500).json({ message: 'Error deleting faculty visit', error });
+        res.status(500).json({ message: 'Error deleting faculty visit', error: error.message });
     }
 };
+
+
 exports.fetchFacultyVisits = async (req, res) => {
     try {
       const { startDate, endDate, eventLocation, typeevent } = req.body;

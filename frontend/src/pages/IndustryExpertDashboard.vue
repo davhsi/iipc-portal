@@ -64,9 +64,11 @@
           class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition text-sm">
           Clear
         </button>
-        <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-sm">
+        <button @click="exportToExcel"
+          class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-sm">
           Export to Excel
         </button>
+
       </div>
     </div>
 
@@ -123,6 +125,7 @@ import { useRouter } from 'vue-router';  // Import useRouter
 import Header from '../components/Header.vue';
 import NewButton from '../components/NewButton.vue';
 import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 const router = useRouter();  // Create a router instance
 
@@ -201,6 +204,49 @@ const clearFilters = () => {
   fetchIndustryExperts();
 };
 
+const exportToExcel = () => {
+  // Start with the base filename
+  let filename = 'Industryexpert';
+
+  // Append domain if selected
+  if (selectedDomain.value) {
+    filename += `_${selectedDomain.value}`;
+  }
+
+  // Append location if selected
+  if (selectedLocation.value) {
+    filename += `_${selectedLocation.value}`;
+  }
+
+  // Append the date range if either startDate or endDate is selected
+  if (startDate.value || endDate.value) {
+    const start = startDate.value ? startDate.value : 'start';
+    const end = endDate.value ? endDate.value : 'end';
+    filename += `_${start}_to_${end}`;
+  }
+
+  // Append the file extension
+  filename += '.xlsx';
+
+  // Create the worksheet from the industry experts data
+  const worksheet = XLSX.utils.json_to_sheet(industryExperts.value.map((expert, index) => ({
+    'S.No': index + 1,
+    'First Name': expert.firstname,
+    'Last Name': expert.lastname,
+    'Domain': expert.domainOfExpertise || 'N/A',
+    'Company': expert.companyName || 'N/A',
+    'Event Type': expert.eventType || 'N/A',
+    'Event Date': formatDate(expert.eventDate),
+    'Star Rating': expert.rating || 'N/A',
+  })));
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Industry Experts');
+
+  // Write the file with the dynamic filename
+  XLSX.writeFile(workbook, filename);
+};
+
 const formatDate = (date) => new Date(date).toLocaleDateString();
 
 const editIndustryExpert = (id) => {
@@ -243,12 +289,16 @@ button {
 }
 
 .star {
-  font-size: 24px; /* Ensure size is consistent */
-  cursor: pointer; /* Change cursor on hover */
-  transition: color 0.2s ease; /* Smooth transition */
+  font-size: 24px;
+  /* Ensure size is consistent */
+  cursor: pointer;
+  /* Change cursor on hover */
+  transition: color 0.2s ease;
+  /* Smooth transition */
 }
 
 .star:hover {
-  color: #FFD700; /* Change color on hover */
+  color: #FFD700;
+  /* Change color on hover */
 }
 </style>

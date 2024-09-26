@@ -40,10 +40,12 @@
 
       <!-- Search, Clear, and Export Buttons -->
       <div class="flex justify-start items-center space-x-2 mt-4">
-        <button @click="searchFacultyVisits" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-sm">
+        <button @click="searchFacultyVisits"
+          class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-sm">
           Search
         </button>
-        <button @click="clearFilters" class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition text-sm">
+        <button @click="clearFilters"
+          class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition text-sm">
           Clear
         </button>
         <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-sm">
@@ -79,13 +81,12 @@
             <td class="border-t px-3 py-2 text-black">{{ visit.eventLocation }}</td>
             <td class="border-t px-3 py-2 text-black">{{ visit.eventOrganizer }}</td>
             <td class="border-t px-4 py-2 text-center">
-              <button
-                class="bg-blue-500 text-white py-1 px-2 rounded mr-2 hover:bg-blue-600 transition"
-                @click="$emit('edit', visit._id)"
-              >
+              <button class="bg-blue-500 text-white py-1 px-2 rounded mr-2 hover:bg-blue-600 transition"
+                @click="editFacultyVisit(visit._id)">
                 <i class="fas fa-edit"></i>
               </button>
             </td>
+
           </tr>
         </tbody>
       </table>
@@ -156,16 +157,21 @@ const clearFilters = () => {
   fetchFacultyVisits();
 };
 
-const deleteFacultyVisit = async (visitId) => {
-  if (confirm('Are you sure you want to delete this visit?')) {
-    try {
-      await axios.delete(`http://localhost:3000/api/faculty-visits/${visitId}`);
-      fetchFacultyVisits();
-    } catch (error) {
-      console.error('Error deleting faculty visit:', error);
-    }
-  }
+// const deleteFacultyVisit = async (visitId) => {
+//   if (confirm('Are you sure you want to delete this visit?')) {
+//     try {
+//       await axios.delete(`http://localhost:3000/api/faculty-visits/${visitId}`);
+//       fetchFacultyVisits();
+//     } catch (error) {
+//       console.error('Error deleting faculty visit:', error);
+//     }
+// //   }
+// };
+
+const editFacultyVisit = (visitId) => {
+  router.push({ name: 'EditFacultyVisit', params: { id: visitId } });
 };
+
 
 const formatDate = (date) => new Date(date).toLocaleDateString();
 </script>
@@ -185,15 +191,18 @@ table {
 }
 
 thead th {
-  @apply bg-gray-200 sticky top-0 z-10 text-black; /* Ensure header text is black */
+  @apply bg-gray-200 sticky top-0 z-10 text-black;
+  /* Ensure header text is black */
 }
 
-th, td {
+th,
+td {
   @apply border px-3 py-2 text-left;
 }
 
 td {
-  color: black; /* Ensure table data text is black */
+  color: black;
+  /* Ensure table data text is black */
 }
 
 button {

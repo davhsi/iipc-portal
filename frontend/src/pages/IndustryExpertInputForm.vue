@@ -217,7 +217,7 @@ async function deleteExpert() {
   if (!confirmDelete) return;
 
   try {
-    const response = await fetch(`http://localhost:3000/api/industry-expert/experts/${route.params.id}`, {
+    const response = await fetch(`http://localhost:3000/api/industry-experts/experts/${route.params.id}`, {
       method: 'DELETE',
     });
 
