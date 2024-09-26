@@ -3,7 +3,7 @@ const FacultyVisit = require('../models/FacultyVisit');
 
 exports.createFacultyVisit = async (req, res) => {
     try {
-        const newVisit = new FacultyVisit(req.body); // Automatically maps req.body to the model
+        const newVisit = new FacultyVisit(req.body); 
         await newVisit.save();
         res.status(201).json(newVisit);
     } catch (error) {
