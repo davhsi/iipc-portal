@@ -136,8 +136,8 @@ const submitForm = async () => {
     console.log('Form data being sent:', formData);
 
     const url = isEditing.value
-      ? `http://localhost:3000/api/faculty-visits/${route.params.id}`
-      : 'http://localhost:3000/api/faculty-visits';
+  ? `http://localhost:3000/api/faculty-visits/${route.params.id}`
+  : 'http://localhost:3000/api/faculty-visits/new'; // Correct endpoint for creating a visit
 
     const response = await fetch(url, {
       method: isEditing.value ? 'PUT' : 'POST',

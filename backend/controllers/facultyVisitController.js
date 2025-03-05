@@ -3,6 +3,7 @@ const FacultyVisit = require('../models/FacultyVisit');
 
 exports.createFacultyVisit = async (req, res) => {
     try {
+        console.log('Received data:', req.body); // Debugging line
         const newVisit = new FacultyVisit(req.body); 
         await newVisit.save();
         res.status(201).json(newVisit);
@@ -11,6 +12,7 @@ exports.createFacultyVisit = async (req, res) => {
         res.status(400).json({ message: 'Error creating faculty visit', error });
     }
 };
+
 
 // Controller for updating a faculty visit
 exports.updateFacultyVisit = async (req, res) => {
