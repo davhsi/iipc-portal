@@ -48,9 +48,11 @@
           class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition text-sm">
           Clear
         </button>
-        <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-sm">
-          Export to Excel
-        </button>
+        <button @click="exportToExcel"
+  class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-sm">
+  Export to Excel
+</button>
+
       </div>
     </div>
 
@@ -100,6 +102,10 @@ import Header from '../components/Header.vue';
 import NewButton from '../components/NewButton.vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import * as XLSX from 'xlsx';
+
+
+
 
 const router = useRouter();
 const facultyVisits = ref([]);
@@ -137,6 +143,21 @@ const fetchFacultyVisits = async (filters = {}) => {
     console.error('Error fetching faculty visits:', error);
   }
 };
+
+
+const exportToExcel = () => {
+  if (facultyVisits.value.length === 0) {
+    alert('No data available to export.');
+    return;
+  }
+
+  const worksheet = XLSX.utils.json_to_sheet(facultyVisits.value);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'FacultyVisits');
+
+  XLSX.writeFile(workbook, 'Faculty_Visits.xlsx');
+};
+
 
 const searchFacultyVisits = () => {
   const filters = {
